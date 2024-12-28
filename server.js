@@ -3,7 +3,10 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
+const dotenv = require('dotenv');
 
+// Load environment variables
+dotenv.config();
 // Initialize App
 const app = express();
 app.use(cors());
@@ -13,7 +16,8 @@ app.use(bodyParser.json({ limit: '10mb' })); // Increase to 10 MB
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true })); // Increase for URL-encoded data
 
 // Connect to MongoDB
-mongoose.connect('mongodb://127.0.0.1:27017/usersDB', {
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/usersDB'; // Fallback for local dev
+mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -110,5 +114,5 @@ app.put('/update-profile', async (req, res) => {
 });
 
 // Start Server
-const PORT = 5000;
+const PORT = process.env.PORT || 5000; // Use environment variable for port
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
